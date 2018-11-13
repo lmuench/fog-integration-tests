@@ -12,7 +12,7 @@ const NOT_FOUND = 404;
 const METHOD_NOT_ALLOWED = 405;
 
 // --- config ---
-const logEnabled = true; // set true to print test data
+const logEnabled = false; // set true to print test data
 
 // --- global test variables ---
 let endpoints = [];
@@ -68,7 +68,7 @@ describe('The extracted resources', () => {
 });
 
 describe('PUT /mapping', () => {
-  it('should return status 204 (NO CONTENT)', async () => {
+  it('should return status 204 "NO CONTENT"', async () => {
     const res = await chai.request(url).put('/mapping').send(mapping);
     expect(res.status).to.equal(NO_CONTENT);
   });
@@ -84,9 +84,9 @@ describe('GET /mapping', () => {
   });
 });
 
-describe('GET, PUT and DELETE /gateway/...', () => {
+describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
   it('should forward requests to resources based on the mapping', async () => {
-    Object.keys(mapping).forEach(async path => {
+    for (const path in mapping) {
       log('1st GET' + path + ' request: ' + new Date().getTime());
       const res1 = await chai.request(url).get('/gateway' + path);
       log('1st GET' + path + ' response: ' + new Date().getTime());
@@ -135,22 +135,25 @@ describe('GET, PUT and DELETE /gateway/...', () => {
       const res = await chai.request(url).delete('/gateway' + path);
       log('1st DELETE' + path + ' response: ' + new Date().getTime());
       expect(res.status).to.equal(METHOD_NOT_ALLOWED);
-    })
+    }
   });
 });
 
-describe('GET and PUT /gateway', () => {
-  it('should forward requests to resources based on the mapping', async () => {
+describe('Fetching all resources after PUT /mapping with empty object', () => {
+  it('should return "NOT FOUND" or "METHOD NOT ALLOWED"', async () => {
+    log('PUT /mapping with empty object body: ' + new Date().getTime());
+    const res = await chai.request(url).put('/mapping').send({});
+    expect(res.status).to.equal(NO_CONTENT);
     Object.keys(mapping).forEach(async path => {
-      const res1 = await chai.request(url).get('/gateway/foo/bar');
+      const res1 = await chai.request(url).get('/gateway' + path);
       expect(res1.body.status).to.equal(NOT_FOUND);
 
-      const res2 = await chai.request(url).put('/gateway/foo/bar').send({
+      const res2 = await chai.request(url).put('/gateway' + path).send({
         value: 1
       });
       expect(res2.body.status).to.equal(NOT_FOUND);
 
-      const res3 = await chai.request(url).delete('/gateway/foo/bar');
+      const res3 = await chai.request(url).delete('/gateway' + path);
       expect(res3.status).to.equal(METHOD_NOT_ALLOWED);
     })
   });
