@@ -164,7 +164,7 @@ describe('Fetching all resources after PUT /mapping with empty object', () => {
     it('should return "BAD GATEWAY or "METHOD NOT ALLOWED""', async () => {
       log('Increasing port numbers:');
       const wrongPortMapping = { ...mapping };
-      for (let key in wrongPortMapping) {
+      for (const key in wrongPortMapping) {
         log(wrongPortMapping[key]);
         const splitUrl = wrongPortMapping[key].split(':');
         let port = parseInt(splitUrl[2].slice(0, 4));
@@ -200,7 +200,7 @@ describe('Fetching all resources after PUT /mapping with empty object', () => {
     it('should return "NOT IMPLEMENTED" or "METHOD NOT ALLOWED"', async () => {
       log('Changing scheme to unsupported protocol:');
       const wrongProtocolMapping = { ...mapping };
-      for (let key in wrongProtocolMapping) {
+      for (const key in wrongProtocolMapping) {
         log(wrongProtocolMapping[key]);
         const splitUrl = wrongProtocolMapping[key].split(':');
         wrongProtocolMapping[key] = 'foo:' + splitUrl[1] + splitUrl[2];
