@@ -82,9 +82,9 @@ describe('GET /mapping', () => {
 describe('GET and PUT /gateway', () => {
   it('should forward requests to resources based on the mapping', async () => {
     Object.keys(mapping).forEach(async path => {
-      log('1st GET' + path + ' request: ' + new Date());
+      log('1st GET' + path + ' request: ' + new Date().getTime());
       const res1 = await chai.request(url).get('/gateway' + path);
-      log('1st GET' + path + ' response: ' + new Date());
+      log('1st GET' + path + ' response: ' + new Date().getTime());
       expect(res1.status).to.equal(200);
       expect(res1).to.be.json;
       expect(res1.body).to.be.an('object');
@@ -92,32 +92,32 @@ describe('GET and PUT /gateway', () => {
       expect(res1.body.payload).to.be.an('object');
 
       if (path.startsWith('/actuators')) {
-        log('1st PUT' + path + ' request: ' + new Date());
+        log('1st PUT' + path + ' request: ' + new Date().getTime());
         const res2 = await chai.request(url).put('/gateway' + path).send({
           value: 1
         });
-        log('1st PUT' + path + ' response: ' + new Date());
+        log('1st PUT' + path + ' response: ' + new Date().getTime());
         expect(res2.status).to.equal(200);
 
-        log('2nd GET' + path + ' request: ' + new Date());
+        log('2nd GET' + path + ' request: ' + new Date().getTime());
         const res3 = await chai.request(url).get('/gateway' + path);
-        log('2nd GET' + path + ' response: ' + new Date());
+        log('2nd GET' + path + ' response: ' + new Date().getTime());
         expect(res3.status).to.equal(200);
         expect(res3).to.be.json;
         expect(res3.body).to.be.an('object');
         expect(res3.body.status).to.equal(200);
         expect(res3.body.payload.value).to.equal(1);
 
-        log('2nd PUT' + path + ' request: ' + new Date());
+        log('2nd PUT' + path + ' request: ' + new Date().getTime());
         const res4 = await chai.request(url).put('/gateway' + path).send({
           value: 0
         });
-        log('2nd PUT' + path + ' response: ' + new Date());
+        log('2nd PUT' + path + ' response: ' + new Date().getTime());
         expect(res4.status).to.equal(200);
 
-        log('3rd GET' + path + ' request: ' + new Date());
+        log('3rd GET' + path + ' request: ' + new Date().getTime());
         const res5 = await chai.request(url).get('/gateway' + path);
-        log('3rd GET' + path + ' response: ' + new Date());
+        log('3rd GET' + path + ' response: ' + new Date().getTime());
         expect(res5.status).to.equal(200);
         expect(res5).to.be.json;
         expect(res5.body).to.be.an('object');
