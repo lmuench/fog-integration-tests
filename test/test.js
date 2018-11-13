@@ -5,7 +5,7 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
 // --- config ---
-const logEnabled = false; // set true to print test data
+const logEnabled = false;  // set true to print test data
 
 // global constants
 const url = 'http://localhost:8080/services';
@@ -13,6 +13,8 @@ const OK = 200;
 const NO_CONTENT = 204;
 const NOT_FOUND = 404;
 const METHOD_NOT_ALLOWED = 405;
+const NOT_IMPLEMENTED = 501;
+const BAD_GATEWAY = 502;
 
 // --- global test variables ---
 let endpoints = [];
@@ -144,7 +146,7 @@ describe('Fetching all resources after PUT /mapping with empty object', () => {
     log('PUT /mapping with empty object body: ' + new Date().getTime());
     const res = await chai.request(url).put('/mapping').send({});
     expect(res.status).to.equal(NO_CONTENT);
-    Object.keys(mapping).forEach(async path => {
+    for (const path in mapping) {
       const res1 = await chai.request(url).get('/gateway' + path);
       expect(res1.body.status).to.equal(NOT_FOUND);
 
@@ -155,7 +157,75 @@ describe('Fetching all resources after PUT /mapping with empty object', () => {
 
       const res3 = await chai.request(url).delete('/gateway' + path);
       expect(res3.status).to.equal(METHOD_NOT_ALLOWED);
-    })
+    }
+  });
+
+  describe('Fetching all resources with incorrect port', () => {
+    it('should return "BAD GATEWAY or "METHOD NOT ALLOWED""', async () => {
+      log('Increasing port numbers:');
+      const wrongPortMapping = { ...mapping };
+      for (let key in wrongPortMapping) {
+        log(wrongPortMapping[key]);
+        const splitUrl = wrongPortMapping[key].split(':');
+        let port = parseInt(splitUrl[2].slice(0, 4));
+        port += 30;
+        wrongPortMapping[key] = (
+          splitUrl[0] + ':' + splitUrl[1] + ':' + port + splitUrl[2].slice(4)
+        );
+        log('-> ' + wrongPortMapping[key]);
+      }
+      log(wrongPortMapping);
+
+      log('PUT /mapping with wrong port mapping' + new Date().getTime());
+      const res = await chai.request(url).put('/mapping').send(
+        wrongPortMapping
+      );
+      expect(res.status).to.equal(NO_CONTENT);
+      for (const path in mapping) {
+        const res1 = await chai.request(url).get('/gateway' + path);
+        expect(res1.body.status).to.equal(BAD_GATEWAY);
+
+        const res2 = await chai.request(url).put('/gateway' + path).send({
+          value: 1
+        });
+        expect(res2.body.status).to.equal(BAD_GATEWAY);
+
+        const res3 = await chai.request(url).delete('/gateway' + path);
+        expect(res3.status).to.equal(METHOD_NOT_ALLOWED);
+      }
+    });
+  });
+
+  describe('Fetching resources of unsupported protocol', () => {
+    it('should return "NOT IMPLEMENTED" or "METHOD NOT ALLOWED"', async () => {
+      log('Changing scheme to unsupported protocol:');
+      const wrongProtocolMapping = { ...mapping };
+      for (let key in wrongProtocolMapping) {
+        log(wrongProtocolMapping[key]);
+        const splitUrl = wrongProtocolMapping[key].split(':');
+        wrongProtocolMapping[key] = 'foo:' + splitUrl[1] + splitUrl[2];
+        log('-> ' + wrongProtocolMapping[key]);
+      }
+      log(wrongProtocolMapping);
+
+      log('PUT /mapping with wrong protocol mapping' + new Date().getTime());
+      const res = await chai.request(url).put('/mapping').send(
+        wrongProtocolMapping
+      );
+      expect(res.status).to.equal(NO_CONTENT);
+      for (const path in mapping) {
+        const res1 = await chai.request(url).get('/gateway' + path);
+        expect(res1.body.status).to.equal(NOT_IMPLEMENTED);
+
+        const res2 = await chai.request(url).put('/gateway' + path).send({
+          value: 1
+        });
+        expect(res2.body.status).to.equal(NOT_IMPLEMENTED);
+
+        const res3 = await chai.request(url).delete('/gateway' + path);
+        expect(res3.status).to.equal(METHOD_NOT_ALLOWED);
+      }
+    });
   });
 });
 
