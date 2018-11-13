@@ -4,15 +4,15 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const expect = chai.expect;
 
+// --- config ---
+const logEnabled = false; // set true to print test data
+
 // global constants
 const url = 'http://localhost:8080/services';
 const OK = 200;
 const NO_CONTENT = 204;
 const NOT_FOUND = 404;
 const METHOD_NOT_ALLOWED = 405;
-
-// --- config ---
-const logEnabled = false; // set true to print test data
 
 // --- global test variables ---
 let endpoints = [];
