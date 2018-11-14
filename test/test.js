@@ -7,8 +7,9 @@ const expect = chai.expect;
 // --- config ---
 const logEnabled = false;  // set true to print test data
 
-// global constants
-const url = 'http://localhost:8080/services';
+// --- global constants ---
+const url = 'http://localhost:8080/services';  // gateway backend REST services
+// HTTP status codes:
 const OK = 200;
 const NO_CONTENT = 204;
 const NOT_FOUND = 404;
