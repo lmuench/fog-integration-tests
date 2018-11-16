@@ -70,16 +70,16 @@ describe('The extracted resources', () => {
   });
 });
 
-describe('PUT /mapping', () => {
+describe('PUT /mappings', () => {
   it('should return status 204 "NO CONTENT"', async () => {
-    const res = await chai.request(url).put('/mapping').send(mapping);
+    const res = await chai.request(url).put('/mappings').send(mapping);
     expect(res.status).to.equal(NO_CONTENT);
   });
 });
 
-describe('GET /mapping', () => {
+describe('GET /mappings', () => {
   it('should return the same mapping', async () => {
-    const res = await chai.request(url).get('/mapping');
+    const res = await chai.request(url).get('/mappings');
     expect(res.status).to.equal(OK);
     expect(res).to.be.json;
     expect(res.body).to.be.an('object');
@@ -142,10 +142,10 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
   });
 });
 
-describe('Fetching all resources after PUT /mapping with empty object', () => {
+describe('Fetching all resources after PUT /mappings with empty object', () => {
   it('should return "NOT FOUND" or "METHOD NOT ALLOWED"', async () => {
-    log('PUT /mapping with empty object body: ' + new Date().getTime());
-    const res = await chai.request(url).put('/mapping').send({});
+    log('PUT /mappings with empty object body: ' + new Date().getTime());
+    const res = await chai.request(url).put('/mappings').send({});
     expect(res.status).to.equal(NO_CONTENT);
     for (const path in mapping) {
       const res1 = await chai.request(url).get('/gateway' + path);
@@ -177,8 +177,8 @@ describe('Fetching all resources after PUT /mapping with empty object', () => {
       }
       log(wrongPortMapping);
 
-      log('PUT /mapping with wrong port mapping' + new Date().getTime());
-      const res = await chai.request(url).put('/mapping').send(
+      log('PUT /mappings with wrong port mapping' + new Date().getTime());
+      const res = await chai.request(url).put('/mappings').send(
         wrongPortMapping
       );
       expect(res.status).to.equal(NO_CONTENT);
@@ -209,8 +209,8 @@ describe('Fetching all resources after PUT /mapping with empty object', () => {
       }
       log(wrongProtocolMapping);
 
-      log('PUT /mapping with wrong protocol mapping' + new Date().getTime());
-      const res = await chai.request(url).put('/mapping').send(
+      log('PUT /mappings with wrong protocol mapping' + new Date().getTime());
+      const res = await chai.request(url).put('/mappings').send(
         wrongProtocolMapping
       );
       expect(res.status).to.equal(NO_CONTENT);
