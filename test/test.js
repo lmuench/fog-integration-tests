@@ -5,7 +5,7 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
 // --- config ---
-const logEnabled = false;  // set true to print test data
+const logEnabled = true;  // set true to print test data
 
 // --- global constants ---
 const url = 'http://localhost:8080/services';  // gateway backend REST services
@@ -177,7 +177,7 @@ describe('Fetching all resources after PUT /mappings with empty object', () => {
       }
       log(wrongPortMapping);
 
-      log('PUT /mappings with wrong port mapping' + new Date().getTime());
+      log('PUT /mappings with wrong port mapping ' + new Date().getTime());
       const res = await chai.request(url).put('/mappings').send(
         wrongPortMapping
       );
@@ -209,7 +209,7 @@ describe('Fetching all resources after PUT /mappings with empty object', () => {
       }
       log(wrongProtocolMapping);
 
-      log('PUT /mappings with wrong protocol mapping' + new Date().getTime());
+      log('PUT /mappings with wrong protocol mapping ' + new Date().getTime());
       const res = await chai.request(url).put('/mappings').send(
         wrongProtocolMapping
       );
