@@ -91,8 +91,7 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
         expect(res1.status).to.equal(OK);
         expect(res1).to.be.json;
         expect(res1.body).to.be.an('object');
-        expect(res1.body.status).to.equal(OK);
-        expect(res1.body.payload).to.be.an('object');
+        expect(res1.body).to.be.an('object');
   
         if (path.startsWith('/actuators')) {
           log('1st PUT' + path + ' request: ' + new Date().getTime());
@@ -101,7 +100,6 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
           });
           log('1st PUT' + path + ' response: ' + new Date().getTime());
           expect(res2.status).to.equal(OK);
-          expect(res2.body.status).to.equal(OK);
   
           log('2nd GET' + path + ' request: ' + new Date().getTime());
           const res3 = await chai.request(url).get('/gateway' + path);
@@ -109,8 +107,7 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
           expect(res3.status).to.equal(OK);
           expect(res3).to.be.json;
           expect(res3.body).to.be.an('object');
-          expect(res3.body.status).to.equal(OK);
-          expect(res3.body.payload.value).to.equal(1);
+          expect(res3.body.value).to.equal(1);
   
           log('2nd PUT' + path + ' request: ' + new Date().getTime());
           const res4 = await chai.request(url).put('/gateway' + path).send({
@@ -118,7 +115,6 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
           });
           log('2nd PUT' + path + ' response: ' + new Date().getTime());
           expect(res4.status).to.equal(OK);
-          expect(res4.body.status).to.equal(OK);
   
           log('3rd GET' + path + ' request: ' + new Date().getTime());
           const res5 = await chai.request(url).get('/gateway' + path);
@@ -126,8 +122,7 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
           expect(res5.status).to.equal(OK);
           expect(res5).to.be.json;
           expect(res5.body).to.be.an('object');
-          expect(res5.body.status).to.equal(OK);
-          expect(res5.body.payload.value).to.equal(0);
+          expect(res5.body.value).to.equal(0);
         }
         log('1st DELETE' + path + ' request: ' + new Date().getTime());
         const res = await chai.request(url).delete('/gateway' + path);
@@ -145,12 +140,12 @@ describe('Fetching all resources after PUT /mappings with empty object', () => {
     expect(res.status).to.equal(NO_CONTENT);
     for (const path in mapping) {
       const res1 = await chai.request(url).get('/gateway' + path);
-      expect(res1.body.status).to.equal(NOT_FOUND);
+      expect(res1.status).to.equal(NOT_FOUND);
 
       const res2 = await chai.request(url).put('/gateway' + path).send({
         value: 1
       });
-      expect(res2.body.status).to.equal(NOT_FOUND);
+      expect(res2.status).to.equal(NOT_FOUND);
 
       const res3 = await chai.request(url).delete('/gateway' + path);
       expect(res3.status).to.equal(METHOD_NOT_ALLOWED);
@@ -184,12 +179,12 @@ describe('Fetching all resources after PUT /mappings with empty object', () => {
       for (const path in mapping) {
         if (!path.includes(':')) {
           const res1 = await chai.request(url).get('/gateway' + path);
-          expect(res1.body.status).to.equal(BAD_GATEWAY);
+          expect(res1.status).to.equal(BAD_GATEWAY);
           
           const res2 = await chai.request(url).put('/gateway' + path).send({
            value: 1
           });
-          expect(res2.body.status).to.equal(BAD_GATEWAY);
+          expect(res2.status).to.equal(BAD_GATEWAY);
           
           const res3 = await chai.request(url).delete('/gateway' + path);
           expect(res3.status).to.equal(METHOD_NOT_ALLOWED); 
@@ -220,12 +215,12 @@ describe('Fetching all resources after PUT /mappings with empty object', () => {
       for (const path in mapping) {
         if (!path.includes(':')) {        
           const res1 = await chai.request(url).get('/gateway' + path);
-          expect(res1.body.status).to.equal(NOT_IMPLEMENTED);
+          expect(res1.status).to.equal(NOT_IMPLEMENTED);
   
           const res2 = await chai.request(url).put('/gateway' + path).send({
             value: 1
           });
-          expect(res2.body.status).to.equal(NOT_IMPLEMENTED);
+          expect(res2.status).to.equal(NOT_IMPLEMENTED);
   
           const res3 = await chai.request(url).delete('/gateway' + path);
           expect(res3.status).to.equal(METHOD_NOT_ALLOWED);
