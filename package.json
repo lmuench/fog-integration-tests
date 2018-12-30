@@ -1,6 +1,6 @@
 {
   "name": "fog-integration-tests",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Ludwig Muench",
   "private": true,
   "main": "index.js",
@@ -11,6 +11,6 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test": "mocha -b"
+    "test": "mocha -b --timeout 120000"
   }
 }
