@@ -134,6 +134,11 @@ describe('GET, PUT and DELETE on all resources (/gateway/...)', () => {
 });
 
 describe('Fetching all resources after PUT /mappings with empty object', () => {
+  after(async () => {
+    log('Cleaning up...');
+    await chai.request(url).put('/mappings').send({});
+  });
+
   it('should return "NOT FOUND" or "METHOD NOT ALLOWED"', async () => {
     log('PUT /mappings with empty object body: ' + new Date().getTime());
     const res = await chai.request(url).put('/mappings').send({});
